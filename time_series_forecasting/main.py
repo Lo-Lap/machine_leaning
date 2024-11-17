@@ -36,28 +36,32 @@ def get_hybrid_prediction(series: pd.Series,
 
     predictions_test = boost_pred_test + y_s[boost_pred_test.index]
 
+    print(f'R2 train score: {r2_score(series.loc[predictions_train.index][:-to_predict], predictions_train[:-to_predict])}')
+
+    print(f'R2 test score: {r2_score(series.loc[predictions_test.index][:-to_predict], predictions_test[:-to_predict])}')
+
+    draw_graphics(series, predictions_train, predictions_test)
+
+
+def draw_graphics(series, prediction_train, prediction_test):
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), sharey=True)
-    y_train_ps = series.loc[boost_pred_train.index]
-    y_test_ps = series.loc[boost_pred_test.index]
+    y_train_ps = series.loc[prediction_train.index]
+    y_test_ps = series.loc[prediction_test.index]
     y_train_ps.plot(ax=ax1, legend=True)
-    predictions_train.plot(ax=ax1, label="prediction train", legend=True)
+    prediction_train.plot(ax=ax1, label="prediction train", legend=True)
     ax1.set_title('Train Predictions')
 
     y_test_ps.plot(ax=ax2, legend=True)
-    predictions_test.plot(ax=ax2, label="prediction test", legend=True)
+    prediction_test.plot(ax=ax2, label="prediction test", legend=True)
     ax2.set_title('Test Predictions')
     plt.show()
 
-    print(f'R2 train score: {r2_score(y_train_ps[:-to_predict], predictions_train[:-to_predict])}')
-
-    print(f'R2 test score: {r2_score(y_test_ps[:-to_predict], predictions_test[:-to_predict])}')
-
     plt.figure()
-    index = boost_pred_train.index.union(boost_pred_test.index)
+    index = prediction_train.index.union(prediction_test.index)
     plot_series = series.loc[index]
     plot_series.plot(color='blue', legend=True)
-    predictions_train.plot(color='orange', label="prediction train", legend=True)
-    predictions_test.plot(color='red', label="prediction test", legend=True)
+    prediction_train.plot(color='orange', label="prediction train", legend=True)
+    prediction_test.plot(color='red', label="prediction test", legend=True)
     plt.show()
 
 
